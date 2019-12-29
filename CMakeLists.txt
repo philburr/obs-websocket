@@ -165,8 +165,14 @@ endif()
 
 # --- Linux-specific build settings and tasks ---
 if(UNIX AND NOT APPLE)
+	if(NOT DEFINED OBS_FRONTEND_LIB)
+		set(OBS_FRONTEND_LIB "OBS_FRONTEND_LIB-NOTFOUND" CACHE FILEPATH "OBS frontend library")
+		message(FATAL_ERROR "Could not find OBS Frontend API's library !")
+	endif()
+
 	set_target_properties(obs-websocket PROPERTIES PREFIX "")
-	target_link_libraries(obs-websocket obs-frontend-api)
+	target_link_libraries(obs-websocket
+		"${OBS_FRONTEND_LIB}")
 
 	file(GLOB locale_files data/locale/*.ini)
 	execute_process(COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE UNAME_MACHINE)
